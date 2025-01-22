@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+*{
+  font-family: "Inter", serif;
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.planner-container {
+  width: 300px;
+  height: 100vh;
+  background-color: white;
+  border-right: 2px solid yellowgreen;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.destination-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  border: 2px dotted yellowgreen;
+  padding: 20px 10px;
+}
+
+.suggestions-container {
+  max-height: 200px;
+  font-size: 0.8rem;
+  overflow-y: auto;
+  background-color: #fff;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.suggestion:hover {
+  background-color: #f0f0f0;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.input-container > input {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding: 4px 10px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo > img {
+  width: 50px;
+  height: 50px;
+}
+
+.logo > span {
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+#map {
+  background-color: greenyellow;
+  margin-left: 300px;
+  height: 100vh;
+  box-sizing: border-box;
+}

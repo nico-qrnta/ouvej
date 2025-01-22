@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <title>TamTam</title>
+  </head>
+  <body>
+    <div class="planner-container">
+
+      <div class="destination-container">
+        <div class="input-container">
+          <label for="departInput"
+            ><i class="bx bxs-flag"></i> Lieu de départ</label
+          >
+          <div class="">
+            <input
+              type="text"
+              id="departInput"
+              placeholder="Ex: Chambéry"
+            />
+            <div class="suggestions-container" id="departSuggestions"></div>
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="destinationInput"
+            ><i class="bx bxs-flag-checkered"></i> Lieu d'arrivée</label
+          >
+          <div>
+            <input
+              type="text"
+              id="destinationInput"
+              placeholder="Ex: Aix-en-Provence"
+            />
+            <div
+              class="suggestions-container"
+              id="destinationSuggestions"
+            ></div>
+          </div>
+        </div>
+
+        <button id="getRouteBtn">Get Route</button>
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </body>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script type="module" src="./main.js"></script>
+</html>
