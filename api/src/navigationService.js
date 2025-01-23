@@ -16,6 +16,7 @@ export const fetchPath = async (coordinates) => {
   });
   
   const responseData = await data.json();
+  console.log(responseData)
 
   return responseData.routes[0];
 };

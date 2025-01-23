@@ -16,6 +16,7 @@ export async function getInputSuggestions(query) {
 
 export function updateSuggestions(suggestions, containerId) {
   const suggestionsContainer = document.getElementById(containerId);
+  
   clearSuggestions(containerId);
 
   if (suggestions.length === 0) {

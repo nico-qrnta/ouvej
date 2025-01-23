@@ -1,8 +1,12 @@
 import { initMap } from './scripts/map.js';
 import { debounce, getInputSuggestions, updateSuggestions } from './scripts/suggestions.js';
 import { fetchPath } from './scripts/navigation.js'
- 
-const map = initMap();
+import { initializeVehicleList, openModal, closeModal } from './scripts/vehicle.js'; 
+
+(() => {
+  const map = initMap();
+  initializeVehicleList();
+})()
 
 const autocompleteInput = debounce(async (event, containerId) => {
   const query = event.target.value;
@@ -20,4 +24,27 @@ document.getElementById('destinationInput').addEventListener('input', (event) =>
 
 document.getElementById('getRouteBtn').addEventListener('click', () => {
   fetchPath();
+});
+
+document.getElementById('openModalVehicleBtn').addEventListener('click', () => {
+  openModal();
+});
+
+document.getElementById('closeModalVehicleBtn').addEventListener('click', () => {
+  closeModal();
+});
+
+window.addEventListener("load", () => {
+  const departInput = document.getElementById("departInput");
+  const destinationInput = document.getElementById("destinationInput");
+
+  if (departInput) {
+    departInput.value = "";
+    delete departInput.dataset.coordinates;
+  }
+
+  if (destinationInput) {
+    destinationInput.value = "";
+    delete destinationInput.dataset.coordinates;
+  }
 });
