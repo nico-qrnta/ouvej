@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-*{
+* {
   font-family: "Inter", serif;
 }
 
@@ -93,48 +93,49 @@ body {
   box-sizing: border-box;
 }
 
-#vehicle-modal-container{
+#vehicle-modal-container {
   width: 300px;
+  min-height: 100vh;
   background-color: white;
-  position: absolute;
+  border-right: 2px solid lightskyblue;
+  position: fixed;
   z-index: 10;
   display: none;
 }
 
-#closeModalVehicleBtn{
+#closeModalVehicleBtn {
   position: absolute;
   right: 10px;
   top: 10px;
 }
 
-#vehicle-list-container{
+#vehicle-list-container {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
 }
 
-.vehicle-modal-title{
+.vehicle-modal-title {
   font-size: 1.5rem;
   padding: 10px;
 }
 
-.vehicle-container{
+.vehicle-container {
   display: flex;
   width: 100%;
   cursor: pointer;
   padding: 10px 0px;
 }
 
-.vehicle-container:hover{
+.vehicle-container:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-
-.vehicle-container > .vehicle-thumbnail{
+.vehicle-container > .vehicle-thumbnail {
   width: 100px;
 }
 
-.vehicle-container > .vehicle-details-container{
+.vehicle-container > .vehicle-details-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;

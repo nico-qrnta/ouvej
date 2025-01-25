@@ -1,12 +1,20 @@
-import { initMap } from './scripts/map.js';
-import { debounce, getInputSuggestions, updateSuggestions } from './scripts/suggestions.js';
-import { fetchPath } from './scripts/navigation.js'
-import { initializeVehicleList, openModal, closeModal } from './scripts/vehicle.js'; 
+import { initMap } from "./scripts/map.js";
+import {
+  debounce,
+  getInputSuggestions,
+  updateSuggestions,
+} from "./scripts/suggestions.js";
+import { fetchPath } from "./scripts/navigation.js";
+import {
+  initializeVehicleList,
+  openModal,
+  closeModal,
+} from "./scripts/vehicle.js";
 
 (() => {
   const map = initMap();
   initializeVehicleList();
-})()
+})();
 
 const autocompleteInput = debounce(async (event, containerId) => {
   const query = event.target.value;
@@ -14,25 +22,29 @@ const autocompleteInput = debounce(async (event, containerId) => {
   updateSuggestions(suggestions, containerId);
 }, 300);
 
-document.getElementById('departInput').addEventListener('input', (event) => {
-  autocompleteInput(event, 'departSuggestions');
+document.getElementById("departInput").addEventListener("input", (event) => {
+  autocompleteInput(event, "departSuggestions");
 });
 
-document.getElementById('destinationInput').addEventListener('input', (event) => {
-  autocompleteInput(event, 'destinationSuggestions');
-});
+document
+  .getElementById("destinationInput")
+  .addEventListener("input", (event) => {
+    autocompleteInput(event, "destinationSuggestions");
+  });
 
-document.getElementById('getRouteBtn').addEventListener('click', () => {
+document.getElementById("getRouteBtn").addEventListener("click", () => {
   fetchPath();
 });
 
-document.getElementById('openModalVehicleBtn').addEventListener('click', () => {
+document.getElementById("openModalVehicleBtn").addEventListener("click", () => {
   openModal();
 });
 
-document.getElementById('closeModalVehicleBtn').addEventListener('click', () => {
-  closeModal();
-});
+document
+  .getElementById("closeModalVehicleBtn")
+  .addEventListener("click", () => {
+    closeModal();
+  });
 
 window.addEventListener("load", () => {
   const departInput = document.getElementById("departInput");
@@ -40,11 +52,9 @@ window.addEventListener("load", () => {
 
   if (departInput) {
     departInput.value = "";
-    delete departInput.dataset.coordinates;
   }
 
   if (destinationInput) {
     destinationInput.value = "";
-    delete destinationInput.dataset.coordinates;
   }
 });

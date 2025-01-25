@@ -1,3 +1,9 @@
+import { setStartMarker, setEndMarker } from "./map.js";
+import {
+  setOriginCoordinates,
+  setDestinationCoordinates,
+} from "./navigation.js";
+
 export async function getInputSuggestions(query) {
   if (!query) {
     return [];
@@ -16,7 +22,7 @@ export async function getInputSuggestions(query) {
 
 export function updateSuggestions(suggestions, containerId) {
   const suggestionsContainer = document.getElementById(containerId);
-  
+
   clearSuggestions(containerId);
 
   if (suggestions.length === 0) {
@@ -40,15 +46,21 @@ export function clearSuggestions(containerId) {
 }
 
 export function selectSuggestion(containerId, location) {
-  const inputId = containerId === "departSuggestions" ? "departInput" : "destinationInput";
+  const inputId =
+    containerId === "departSuggestions" ? "departInput" : "destinationInput";
   const input = document.getElementById(inputId);
-  
+
   input.value = location.display_name;
 
-  const coordinates = [location.lon, location.lat];
-  input.dataset.coordinates = JSON.stringify(coordinates);
-  
   clearSuggestions(containerId);
+
+  if (inputId === "departInput") {
+    setOriginCoordinates(location);
+    setStartMarker(location);
+  } else {
+    setDestinationCoordinates(location);
+    setEndMarker(location);
+  }
 }
 
 export function debounce(callback, delay) {

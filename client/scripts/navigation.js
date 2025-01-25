@@ -1,4 +1,64 @@
-import { map } from './map.js'; 
+import { map } from "./map.js";
+
+export let originCoordinates = null;
+export let destinationCoordinates = null;
+
+export async function fetchPath() {
+  const departInput = document.getElementById("departInput");
+  const destinationInput = document.getElementById("destinationInput");
+
+  if (departInput.value && destinationInput.value) {
+    fetch("http://localhost:3000/path", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        coordinates: [
+          [originCoordinates.lat, originCoordinates.lon],
+          [destinationCoordinates.lat, destinationCoordinates.lon],
+        ],
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        handleNewPath(data);
+      })
+      .catch((error) => console.error("Error fetching route:", error));
+  } else {
+    alert("Please set both origin and destination.");
+  }
+}
+
+function handleNewPath(route) {
+  const polylineString = route.geometry;
+  if (!polylineString) {
+    console.error("No polyline string received from route.");
+    return;
+  }
+
+  const decodedPolyline = decodePolyline(polylineString);
+
+  if (!map) {
+    console.error("Map is not initialized.");
+    return;
+  }
+
+  if (window.polylineLayer) {
+    console.log("Removing existing polyline.");
+    map.removeLayer(window.polylineLayer);
+  }
+
+  window.polylineLayer = L.polyline(decodedPolyline, { color: "blue" });
+
+  if (window.polylineLayer instanceof L.Polyline) {
+    window.polylineLayer.addTo(map);
+    map.fitBounds(window.polylineLayer.getBounds());
+  } else {
+    console.error("Polyline creation failed.");
+  }
+}
 
 function decodePolyline(encoded) {
   let points = [];
@@ -18,7 +78,7 @@ function decodePolyline(encoded) {
       shift += 5;
     } while (byte >= 0x20);
 
-    let deltaLat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    let deltaLat = result & 1 ? ~(result >> 1) : result >> 1;
     lat += deltaLat;
 
     shift = 0;
@@ -30,80 +90,19 @@ function decodePolyline(encoded) {
       shift += 5;
     } while (byte >= 0x20);
 
-    let deltaLng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    let deltaLng = result & 1 ? ~(result >> 1) : result >> 1;
     lng += deltaLng;
 
-    points.push([lat / 1e5, lng / 1e5]); 
+    points.push([lat / 1e5, lng / 1e5]);
   }
 
   return points;
 }
 
-export async function fetchPath() {
-  const departInput = document.getElementById("departInput");
-  const destinationInput = document.getElementById("destinationInput");
-
-  if (departInput.value && destinationInput.value) {
-    const departCoordinates = JSON.parse(departInput.dataset.coordinates);
-    const destinationCoordinates = JSON.parse(
-      destinationInput.dataset.coordinates
-    );
-
-    fetch("http://localhost:3000/path", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        coordinates: [departCoordinates, destinationCoordinates],
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        handleNewPath(data)
-      })
-      .catch((error) => console.error("Error fetching route:", error));
-  } else {
-    alert("Please set both origin and destination.");
-  }
+export function setOriginCoordinates(location) {
+  originCoordinates = location;
 }
 
-function handleNewPath(route) {
-  console.log("Received route:", route); // Log the entire route object
-
-  const polylineString = route.geometry;  // Get the polyline string
-  if (!polylineString) {
-    console.error("No polyline string received from route.");
-    return;
-  }
-
-  const decodedPolyline = decodePolyline(polylineString);
-  console.log("Decoded polyline:", decodedPolyline);  // Log the decoded polyline
-
-  // Check if the map is available
-  if (!map) {
-    console.error("Map is not initialized.");
-    return;
-  }
-
-  // Remove the existing polyline if any
-  if (window.polylineLayer) {
-    console.log("Removing existing polyline.");
-    map.removeLayer(window.polylineLayer);
-  }
-
-  // Create the new polyline
-  window.polylineLayer = L.polyline(decodedPolyline, { color: 'blue' });
-
-  // Check if polylineLayer is a valid Leaflet polyline object
-  if (window.polylineLayer instanceof L.Polyline) {
-    console.log("Adding polyline to map.");
-    window.polylineLayer.addTo(map);
-    
-    // Zoom to fit the bounds of the new polyline
-    map.fitBounds(window.polylineLayer.getBounds());
-  } else {
-    console.error("Polyline creation failed.");
-  }
+export function setDestinationCoordinates(location) {
+  destinationCoordinates = location;
 }
