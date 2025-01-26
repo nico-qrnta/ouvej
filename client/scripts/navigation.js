@@ -1,4 +1,5 @@
 import { map } from "./map.js";
+import { selectedVehicle } from "./vehicle.js";
 
 export let originCoordinates = null;
 export let destinationCoordinates = null;
@@ -7,28 +8,39 @@ export async function fetchPath() {
   const departInput = document.getElementById("departInput");
   const destinationInput = document.getElementById("destinationInput");
 
-  if (departInput.value && destinationInput.value) {
-    fetch("http://localhost:3000/path", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        coordinates: [
-          [originCoordinates.lon, originCoordinates.lat],
-          [destinationCoordinates.lon, destinationCoordinates.lat],
-        ],
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        handleNewPath(data);
-      })
-      .catch((error) => console.error("Error fetching route:", error));
-  } else {
-    alert("Please set both origin and destination.");
+  if (!originCoordinates) {
+    alert("Veuillez indiquer le lieu départ.");
+    return;
   }
+
+  if (!destinationCoordinates) {
+    alert("Veuillez indiquer le lieu d'arrivée.");
+    return;
+  }
+
+  if (!selectedVehicle) {
+    alert("Veuillez sélectionner un véhicule.");
+    return;
+  }
+
+  fetch("http://localhost:3000/path", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      coordinates: [
+        [originCoordinates.lon, originCoordinates.lat],
+        [destinationCoordinates.lon, destinationCoordinates.lat],
+      ],
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      handleNewPath(data);
+    })
+    .catch((error) => console.error("Error fetching route:", error));
 }
 
 function handleNewPath(route) {
@@ -100,9 +112,17 @@ function decodePolyline(encoded) {
 }
 
 export function setOriginCoordinates(location) {
+  removeExistingPolyline();
   originCoordinates = location;
 }
 
 export function setDestinationCoordinates(location) {
+  removeExistingPolyline();
   destinationCoordinates = location;
+}
+
+function removeExistingPolyline() {
+  if (window.polylineLayer) {
+    map.removeLayer(window.polylineLayer);
+  }
 }
