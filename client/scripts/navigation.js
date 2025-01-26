@@ -15,8 +15,8 @@ export async function fetchPath() {
       },
       body: JSON.stringify({
         coordinates: [
-          [originCoordinates.lat, originCoordinates.lon],
-          [destinationCoordinates.lat, destinationCoordinates.lon],
+          [originCoordinates.lon, originCoordinates.lat],
+          [destinationCoordinates.lon, destinationCoordinates.lat],
         ],
       }),
     })
