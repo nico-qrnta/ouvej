@@ -50,19 +50,24 @@
               ></div>
             </div>
           </div>
-
-          <button id="getRouteBtn">Calculer l'itinéraire</button>
         </div>
-
       </div>
 
       <div class="vehicle-selector">
         <h1>Mon véhicule</h1>
-
-        
-        <button id="openModalVehicleBtn">Sélectionner un véhicule</button>
-
+        <div class="vehicle-selector">
+          <button id="openModalVehicleBtn" class="vehicle-button">
+            <i class="bx bx-car"></i>
+            <span>Sélectionnez un véhicule</span>
+          </button>
+        </div>
+        <div id="selected-vehicle-container" style="display: none"></div>
       </div>
+
+      <button id="getRouteBtn" class="route-button">
+        <i class="bx bxs-navigation"></i>
+        Calculer l'itinéraire
+      </button>
     </div>
 
     <div id="vehicle-modal-container">

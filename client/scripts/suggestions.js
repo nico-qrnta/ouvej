@@ -42,6 +42,8 @@ export function updateSuggestions(suggestions, containerId) {
 
 export function clearSuggestions(containerId) {
   const suggestionsContainer = document.getElementById(containerId);
+
+  suggestionsContainer.style.border = "none";
   suggestionsContainer.innerHTML = "";
 }
 

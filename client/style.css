@@ -10,10 +10,15 @@ body {
   min-height: 100vh;
 }
 
+h1 {
+  font-size: 1.3rem;
+  color: #007bff;
+}
+
 .planner-container {
   width: 300px;
   height: 100vh;
-  position: relative;
+  position: fixed;
   background-color: white;
   border-right: 2px solid lightskyblue;
   box-sizing: border-box;
@@ -21,21 +26,68 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  position: fixed;
   top: 0;
   left: 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.destination-container {
+.input-container {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.destination-input-container {
+.input-container label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #444;
   display: flex;
-  flex-direction: column;
-  gap: 40px;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-container label i {
+  font-size: 18px;
+  color: #007bff;
+}
+
+.input-container div {
+  position: relative;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 5px 10px 5px 10px;
+  box-sizing: border-box;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-container input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+  background-color: #fff;
+}
+
+.input-container input::placeholder {
+  color: #aaa;
+}
+
+.input-container div i {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #ccc;
+  pointer-events: none;
 }
 
 .suggestions-container {
@@ -55,35 +107,6 @@ body {
 
 .suggestion:hover {
   background-color: #f0f0f0;
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-}
-
-.input-container > div > input {
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: 5px;
-  padding: 4px 10px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.logo > img {
-  width: 50px;
-  height: 50px;
-}
-
-.logo > span {
-  font-weight: bold;
-  font-size: 1.4rem;
 }
 
 #map {
@@ -131,20 +154,89 @@ body {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.vehicle-container > .vehicle-thumbnail {
+.vehicle-thumbnail {
   width: 100px;
 }
 
-.vehicle-container > .vehicle-details-container {
+.vehicle-details-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.vehicle-details-container > .vehicle-model {
+#selected-vehicle-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicle-model {
   font-weight: bold;
 }
 
-.vehicle-details-container > .vehicle-make {
+.vehicle-make {
   text-transform: uppercase;
+}
+
+.vehicle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+  border: 2px dashed #ccc;
+  background-color: #fff;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vehicle-button i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.vehicle-button:hover {
+  background-color: #f9f9f9;
+  border-color: #999;
+}
+
+.vehicle-button:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.route-button {
+  position: absolute;
+  width: calc(100% - 40px);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #007bff;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.route-button i {
+  font-size: 24px;
+}
+
+.route-button:hover {
+  background-color: #0056b3;
+}
+
+.route-button:active {
+  background-color: #004494;
 }

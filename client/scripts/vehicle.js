@@ -3,13 +3,17 @@ import { create } from "./util.js";
 export let vehicleList;
 export let selectedVehicle;
 
-export function openModal(){
-  const vehicleModalContainer = document.getElementById("vehicle-modal-container");
+export function openModal() {
+  const vehicleModalContainer = document.getElementById(
+    "vehicle-modal-container"
+  );
   vehicleModalContainer.style.display = "block";
 }
 
-export function closeModal(){
-  const vehicleModalContainer = document.getElementById("vehicle-modal-container");
+export function closeModal() {
+  const vehicleModalContainer = document.getElementById(
+    "vehicle-modal-container"
+  );
   vehicleModalContainer.style.display = "none";
 }
 
@@ -29,21 +33,72 @@ async function getVehicleList() {
 }
 
 async function updateVehicleList() {
-  const vehicleListContainer = document.getElementById("vehicle-list-container");
+  const vehicleListContainer = document.getElementById(
+    "vehicle-list-container"
+  );
 
-  vehicleList.forEach(vehicle => {
-    createVehicleThumbnail(vehicleListContainer, vehicle)
+  vehicleList.forEach((vehicle) => {
+    createVehicleThumbnail(vehicleListContainer, vehicle);
   });
 }
 
-
-function createVehicleThumbnail(container, vehicle){
+function createVehicleThumbnail(container, vehicle) {
   let vehicleContainer = create("div", container, null, "vehicle-container");
   let image = create("img", vehicleContainer, null, "vehicle-thumbnail");
   image.src = vehicle.media;
 
-  let detailsContainer = create("div", vehicleContainer, null, "vehicle-details-container");
+  let detailsContainer = create(
+    "div",
+    vehicleContainer,
+    null,
+    "vehicle-details-container"
+  );
   create("span", detailsContainer, vehicle.model, "vehicle-model");
   create("span", detailsContainer, vehicle.make, "vehicle-make");
+
+  vehicleContainer.addEventListener("click", () => {
+    handleVehicleSelection(vehicle);
+  });
 }
 
+function handleVehicleSelection(vehicle) {
+  const selectedVehicleContainer = document.getElementById(
+    "selected-vehicle-container"
+  );
+
+  if (!selectedVehicle) {
+    const selectButton = document.getElementById("openModalVehicleBtn");
+    selectButton.style.display = "none";
+    selectedVehicleContainer.style.display = "block";
+  }
+
+  selectedVehicle = vehicle;
+
+  /* show vehicle informations */
+
+  selectedVehicleContainer.innerHTML = "";
+
+  let vehicleContainer = create(
+    "div",
+    selectedVehicleContainer,
+    null,
+    "vehicle-container"
+  );
+  let image = create("img", vehicleContainer, null, "vehicle-thumbnail");
+  image.src = vehicle.media;
+
+  let detailsContainer = create(
+    "div",
+    vehicleContainer,
+    null,
+    "vehicle-details-container"
+  );
+  create("span", detailsContainer, vehicle.model, "vehicle-model");
+  create("span", detailsContainer, vehicle.make, "vehicle-make");
+
+  selectedVehicleContainer.addEventListener("click", () => {
+    openModal();
+  });
+
+  closeModal();
+}
