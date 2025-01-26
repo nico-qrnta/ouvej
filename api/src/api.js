@@ -2,7 +2,11 @@ import express from "express";
 import cors from "cors";
 import { fetchVehicleList, fetchVehicleDetails } from "./graphqlService.js";
 import { fetchPlanSuggestion } from "./planService.js";
-import { fetchPath } from "./navigationService.js";
+import {
+  fetchRoute,
+  fetchChargingStations,
+  addChargingStationsToRoute,
+} from "./navigationService.js";
 
 const app = express();
 app.use(cors());
@@ -55,8 +59,7 @@ app.post("/route", async (req, res) => {
 
   if (!coordinates || coordinates.length < 2) {
     return res.status(400).json({
-      error:
-        'Veuillez renseigner des coordonnées valides. (Ex: [["45.5662672","5.9203636"],["45.8992348","6.1288847"]]',
+      error: "Veuillez renseigner des coordonnées valides.",
     });
   }
 
@@ -68,12 +71,18 @@ app.post("/route", async (req, res) => {
 
   try {
     const routeData = await fetchRoute(coordinates);
-    res.json(routeData);
+    const { routeWithCharging, chargingStops } =
+      await addChargingStationsToRoute(routeData, vehicle_autonomy);
+
+    res.json({
+      route: routeWithCharging,
+      chargingStops: chargingStops,
+    });
   } catch (error) {
-    console.error("Error fetching route from OpenRouteService:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch route from OpenRouteService" });
+    console.error("Error:", error);
+    res.status(500).json({
+      error: "Une erreur est survenue lors du calcul de l'itinéraire",
+    });
   }
 });
 

@@ -1,4 +1,4 @@
-import { map } from "./map.js";
+import { map, displayChargingStationMarker } from "./map.js";
 import { selectedVehicle } from "./vehicle.js";
 
 export let originCoordinates = null;
@@ -23,7 +23,9 @@ export async function fetchPath() {
     return;
   }
 
-  fetch("http://localhost:3000/path", {
+  console.log(selectedVehicle);
+
+  fetch("http://localhost:3000/route", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,6 +35,7 @@ export async function fetchPath() {
         [originCoordinates.lon, originCoordinates.lat],
         [destinationCoordinates.lon, destinationCoordinates.lat],
       ],
+      vehicle_autonomy: 100,
     }),
   })
     .then((response) => response.json())
@@ -44,13 +47,13 @@ export async function fetchPath() {
 }
 
 function handleNewPath(route) {
-  const polylineString = route.geometry;
-  if (!polylineString) {
-    console.error("No polyline string received from route.");
-    return;
-  }
+  const decodedPolyline = route.route;
+  // if (!polylineString) {
+  //   console.error("No polyline string received from route.");
+  //   return;
+  // }
 
-  const decodedPolyline = decodePolyline(polylineString);
+  // const decodedPolyline = decodePolyline(polylineString);
 
   if (!map) {
     console.error("Map is not initialized.");
@@ -62,14 +65,17 @@ function handleNewPath(route) {
     map.removeLayer(window.polylineLayer);
   }
 
-  window.polylineLayer = L.polyline(decodedPolyline, { color: "blue" });
+  window.polylineLayer = L.polyline(decodedPolyline, { color: "#007bff" });
+  window.polylineLayer.addTo(map);
+  map.fitBounds(window.polylineLayer.getBounds());
 
-  if (window.polylineLayer instanceof L.Polyline) {
-    window.polylineLayer.addTo(map);
-    map.fitBounds(window.polylineLayer.getBounds());
-  } else {
-    console.error("Polyline creation failed.");
-  }
+  route.chargingStops.forEach((chargingStop) => {
+    displayChargingStationMarker(
+      chargingStop.name,
+      chargingStop.lat,
+      chargingStop.lon
+    );
+  });
 }
 
 function decodePolyline(encoded) {

@@ -18,6 +18,13 @@ export function initMap() {
   return map;
 }
 
+export function displayChargingStationMarker(name, lat, lon) {
+  console.log("caca");
+  L.marker([lat, lon], {
+    title: name,
+  }).addTo(map);
+}
+
 export function setStartMarker(location) {
   if (!map) {
     console.error("Map is not initialized.");
