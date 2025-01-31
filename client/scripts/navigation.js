@@ -1,4 +1,4 @@
-import { map, displayChargingStationMarker, clearChargingStationMarkers } from "./map.js";
+import { map, displayChargingStationMarker, clearChargingStationMarkers, clearPolyline } from "./map.js";
 import { selectedVehicle } from "./vehicle.js";
 
 export let originCoordinates = null;
@@ -49,10 +49,7 @@ function handleNewPath(route) {
     return;
   }
 
-  if (window.polylineLayer) {
-    console.log("Removing existing polyline.");
-    map.removeLayer(window.polylineLayer);
-  }
+  clearPolyline();
 
   window.polylineLayer = L.polyline(decodedPolyline, { color: "#007bff" });
   window.polylineLayer.addTo(map);

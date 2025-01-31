@@ -20,16 +20,9 @@ export function initMap() {
 }
 
 export function displayChargingStationMarker(lat, lon) {
-  L.marker([lat, lon]).addTo(map);
+  const marker = L.marker([lat, lon]).addTo(map);
+  chargingStationsMarkers.push(marker);
 }
-
-export function clearChargingStationMarkers() {
-  if (chargingStationsMarkers.length > 0) {
-    chargingStationsMarkers.forEach(marker => map.removeLayer(marker));
-    chargingStationsMarkers.length = 0;
-  }
-}
-
 
 export function setStartMarker(location) {
   if (!map) {
@@ -37,9 +30,8 @@ export function setStartMarker(location) {
     return;
   }
 
-  if (startMarker) {
-    map.removeLayer(startMarker);
-  }
+  clearOriginMarker();
+  clearChargingStationMarkers();
 
   startMarker = L.marker([location.lat, location.lon], {
     title: location.name || "Starting Point",
@@ -56,9 +48,8 @@ export function setEndMarker(location) {
     return;
   }
 
-  if (endMarker) {
-    map.removeLayer(endMarker);
-  }
+  clearDestinationMarker();
+  clearChargingStationMarkers();
 
   endMarker = L.marker([location.lat, location.lon], {
     title: location.name || "Destination",
@@ -75,8 +66,6 @@ function isMarkersVisible(coord1, coord2) {
   if (coord1) {
     const point1 = L.latLng(coord1.lat, coord1.lon);
 
-    console.log(coord1);
-
     if (!bounds.contains(point1)) {
       return false;
     }
@@ -88,7 +77,6 @@ function isMarkersVisible(coord1, coord2) {
       return false;
     }
   }
-  console.log("coucou");
 
   return true;
 }
@@ -117,4 +105,29 @@ function centerBounds(coord1, coord2) {
   map.fitBounds(newBounds, {
     padding: [50, 50],
   });
+}
+
+export function clearChargingStationMarkers() {
+  if (chargingStationsMarkers.length > 0) {
+    chargingStationsMarkers.forEach((marker) => map.removeLayer(marker));
+    chargingStationsMarkers.length = 0;
+  }
+}
+
+function clearOriginMarker() {
+  if (startMarker) {
+    map.removeLayer(startMarker);
+  }
+}
+
+function clearDestinationMarker() {
+  if (endMarker) {
+    map.removeLayer(endMarker);
+  }
+}
+
+export function clearPolyline() {
+  if (window.polylineLayer) {
+    map.removeLayer(window.polylineLayer);
+  }
 }

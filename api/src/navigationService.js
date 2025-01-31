@@ -35,7 +35,6 @@ export async function fetchChargingStations(lat, lon, radius = 5000) {
   }
 
   const data = await response.json();
-  console.log(data);
   return {
     lat: data.results[0].geo_point_borne.lat,
     lon: data.results[0].geo_point_borne.lon,
@@ -118,8 +117,6 @@ export async function findRouteChargingStations(
 
     waypoints.unshift(originCoordinates);
     waypoints.push(destinationCoordinates);
-
-    console.log(waypoints);
 
     finalRoute = await fetchRoute(waypoints);
     finalPointsPolyline = polyline.decode(finalRoute.geometry);
