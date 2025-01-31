@@ -13,7 +13,7 @@ import {
 
 (() => {
   const map = initMap();
-  initializeVehicleList();
+  // initializeVehicleList();
 })();
 
 const autocompleteInput = debounce(async (event, containerId) => {

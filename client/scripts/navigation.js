@@ -1,13 +1,10 @@
-import { map, displayChargingStationMarker } from "./map.js";
+import { map, displayChargingStationMarker, clearChargingStationMarkers } from "./map.js";
 import { selectedVehicle } from "./vehicle.js";
 
 export let originCoordinates = null;
 export let destinationCoordinates = null;
 
 export async function fetchPath() {
-  const departInput = document.getElementById("departInput");
-  const destinationInput = document.getElementById("destinationInput");
-
   if (!originCoordinates) {
     alert("Veuillez indiquer le lieu départ.");
     return;
@@ -18,12 +15,10 @@ export async function fetchPath() {
     return;
   }
 
-  if (!selectedVehicle) {
-    alert("Veuillez sélectionner un véhicule.");
-    return;
-  }
-
-  console.log(selectedVehicle);
+  // if (!selectedVehicle) {
+  //   alert("Veuillez sélectionner un véhicule.");
+  //   return;
+  // }
 
   fetch("http://localhost:3000/route", {
     method: "POST",
@@ -35,7 +30,7 @@ export async function fetchPath() {
         [originCoordinates.lon, originCoordinates.lat],
         [destinationCoordinates.lon, destinationCoordinates.lat],
       ],
-      vehicle_autonomy: 100,
+      vehicle_autonomy: 357,
     }),
   })
     .then((response) => response.json())
@@ -47,13 +42,7 @@ export async function fetchPath() {
 }
 
 function handleNewPath(route) {
-  const decodedPolyline = route.route;
-  // if (!polylineString) {
-  //   console.error("No polyline string received from route.");
-  //   return;
-  // }
-
-  // const decodedPolyline = decodePolyline(polylineString);
+  const decodedPolyline = route.routePointsPolyline;
 
   if (!map) {
     console.error("Map is not initialized.");
@@ -69,61 +58,23 @@ function handleNewPath(route) {
   window.polylineLayer.addTo(map);
   map.fitBounds(window.polylineLayer.getBounds());
 
-  route.chargingStops.forEach((chargingStop) => {
+  route.chargingStations.forEach((chargingStation) => {
     displayChargingStationMarker(
-      chargingStop.name,
-      chargingStop.lat,
-      chargingStop.lon
+      chargingStation.lat,
+      chargingStation.lon
     );
   });
 }
 
-function decodePolyline(encoded) {
-  let points = [];
-  let index = 0;
-  let len = encoded.length;
-  let lat = 0;
-  let lng = 0;
-
-  while (index < len) {
-    let shift = 0;
-    let result = 0;
-    let byte;
-
-    do {
-      byte = encoded.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-
-    let deltaLat = result & 1 ? ~(result >> 1) : result >> 1;
-    lat += deltaLat;
-
-    shift = 0;
-    result = 0;
-
-    do {
-      byte = encoded.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-
-    let deltaLng = result & 1 ? ~(result >> 1) : result >> 1;
-    lng += deltaLng;
-
-    points.push([lat / 1e5, lng / 1e5]);
-  }
-
-  return points;
-}
-
 export function setOriginCoordinates(location) {
   removeExistingPolyline();
+  clearChargingStationMarkers();
   originCoordinates = location;
 }
 
 export function setDestinationCoordinates(location) {
   removeExistingPolyline();
+  clearChargingStationMarkers();
   destinationCoordinates = location;
 }
 

@@ -3,6 +3,7 @@ import { destinationCoordinates, originCoordinates } from "./navigation.js";
 export let map;
 let startMarker = null;
 let endMarker = null;
+let chargingStationsMarkers = [];
 
 export function initMap() {
   if (!map) {
@@ -18,12 +19,17 @@ export function initMap() {
   return map;
 }
 
-export function displayChargingStationMarker(name, lat, lon) {
-  console.log("caca");
-  L.marker([lat, lon], {
-    title: name,
-  }).addTo(map);
+export function displayChargingStationMarker(lat, lon) {
+  L.marker([lat, lon]).addTo(map);
 }
+
+export function clearChargingStationMarkers() {
+  if (chargingStationsMarkers.length > 0) {
+    chargingStationsMarkers.forEach(marker => map.removeLayer(marker));
+    chargingStationsMarkers.length = 0;
+  }
+}
+
 
 export function setStartMarker(location) {
   if (!map) {
