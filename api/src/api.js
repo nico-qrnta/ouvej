@@ -5,7 +5,7 @@ import { fetchPlanSuggestion } from "./planService.js";
 import {
   fetchRoute,
   fetchChargingStations,
-  addChargingStationsToRoute,
+  findRouteChargingStations,
 } from "./navigationService.js";
 
 const app = express();
@@ -65,19 +65,20 @@ app.post("/route", async (req, res) => {
 
   if (!vehicle_autonomy) {
     return res.status(400).json({
-      error: "Veuillez renseigner l'autonomie en km de votre véhicule",
+      error: "Veuillez renseigner le chmap 'vehicle_autonomy' en km",
     });
   }
 
   try {
     const routeData = await fetchRoute(coordinates);
-    const { routeWithCharging, chargingStops } =
-      await addChargingStationsToRoute(routeData, vehicle_autonomy);
+    const data = await findRouteChargingStations(
+      coordinates[0],
+      coordinates[1],
+      routeData,
+      vehicle_autonomy
+    );
 
-    res.json({
-      route: routeWithCharging,
-      chargingStops: chargingStops,
-    });
+    res.json(data);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({

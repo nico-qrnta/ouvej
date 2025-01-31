@@ -23,60 +23,110 @@ export async function fetchRoute(coordinates) {
   }
 
   const data = await response.json();
-  return data.routes[0]; // On suppose qu'on récupère le premier itinéraire
+  return data.routes[0];
 }
 
 export async function fetchChargingStations(lat, lon, radius = 5000) {
   const response = await fetch(
-    `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=100&where=within_distance(geo_point_borne, geom'POINT(${lon} ${lat})', 20km)`
+    `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=within_distance(geo_point_borne, geom'POINT(${lon} ${lat})', 60km)`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch charging stations");
+    throw new Error("Impossible de récupérer les stations de recharge");
   }
 
   const data = await response.json();
-  console.log("data ", data);
-  return data.results.map((record) => ({
-    lat: record.geo_point_borne.lat,
-    lon: record.geo_point_borne.lon,
-    name: record.n_amenageur,
-  }));
+  console.log(data);
+  return {
+    lat: data.results[0].geo_point_borne.lat,
+    lon: data.results[0].geo_point_borne.lon,
+    name: data.results[0].n_amenageur,
+  };
 }
 
-// Fonction pour ajouter des bornes de recharge selon l'autonomie
-export async function addChargingStationsToRoute(route, vehicleAutonomy) {
-  const totalDistance = route.summary.distance / 1000;
-  const routeCoordinates = polyline.decode(route.geometry);
-  const chargingStops = [];
+function haversineDistance(coord1, coord2) {
+  const R = 6371;
+  const toRad = (deg) => deg * (Math.PI / 180);
+  let [lat1, lon1] = coord1;
+  let [lat2, lon2] = coord2;
 
-  let remainingDistance = totalDistance;
-  let currentSegmentStart = routeCoordinates[0];
-  let lastStop = currentSegmentStart;
+  let dLat = toRad(lat2 - lat1);
+  let dLon = toRad(lon2 - lon1);
 
-  console.log("routeCoordinates", routeCoordinates);
+  let a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
 
-  while (remainingDistance > 0) {
-    const segmentDistance = Math.min(vehicleAutonomy * 0.8, remainingDistance);
-    const segmentEnd =
-      routeCoordinates[
-        Math.floor((segmentDistance / totalDistance) * routeCoordinates.length)
-      ];
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    console.log("segment end ", segmentEnd);
+  return R * c;
+}
 
-    const [lat, lon] = segmentEnd;
-    const chargingStations = await fetchChargingStations(lat, lon, 5000);
+function extractEndSegmentCoordinates(points, segmentLength) {
+  let endSegmentCoordinates = [];
+  let segment = [];
+  let distance = 0;
 
-    if (chargingStations.length > 0) {
-      chargingStops.push(...chargingStations);
+  for (let i = 0; i < points.length - 1; i++) {
+    let d = haversineDistance(points[i], points[i + 1]);
+    if (distance + d >= segmentLength) {
+      endSegmentCoordinates.push({
+        lat: points[i][0],
+        lon: points[i][1],
+      });
+      segment = [points[i]];
+      distance = 0;
+    } else {
+      segment.push(points[i]);
+      distance += d;
     }
+  }
 
-    remainingDistance -= segmentDistance;
-    lastStop = segmentEnd;
+  return endSegmentCoordinates;
+}
+
+async function findClosestChargingStation(coordinates) {
+  return await fetchChargingStations(coordinates.lat, coordinates.lon);
+}
+
+export async function findRouteChargingStations(
+  originCoordinates,
+  destinationCoordinates,
+  initialRoute,
+  segmentLength
+) {
+  let finalRoute = initialRoute;
+  let finalPointsPolyline = polyline.decode(initialRoute.geometry);
+  let waypoints = [];
+  let chargingStations = [];
+
+  let endSegmentCoordinates = extractEndSegmentCoordinates(
+    finalPointsPolyline,
+    segmentLength
+  );
+
+  if (endSegmentCoordinates) {
+    chargingStations = await Promise.all(
+      endSegmentCoordinates.map((endSegment) =>
+        findClosestChargingStation(endSegment)
+      )
+    );
+
+    waypoints = chargingStations.map((waypoint) => [
+      waypoint.lon,
+      waypoint.lat,
+    ]);
+
+    waypoints.unshift(originCoordinates);
+    waypoints.push(destinationCoordinates);
+
+    console.log(waypoints);
+
+    finalRoute = await fetchRoute(waypoints);
+    finalPointsPolyline = polyline.decode(finalRoute.geometry);
   }
 
   return {
-    routeWithCharging: routeCoordinates,
-    chargingStops,
+    chargingStations: chargingStations,
+    routePointsPolyline: finalPointsPolyline,
   };
 }
