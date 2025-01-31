@@ -28,7 +28,7 @@ export async function fetchRoute(coordinates) {
 
 export async function fetchChargingStations(lat, lon, radius = 5000) {
   const response = await fetch(
-    `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=within_distance(geo_point_borne, geom'POINT(${lon} ${lat})', 60km)`
+    `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=within_distance(geo_point_borne, geom'POINT(${lon} ${lat})', 60km)&order_by=distance(geo_point_borne, geom'POINT(5.9203636 45.5662672)') ASC`
   );
   if (!response.ok) {
     throw new Error("Impossible de récupérer les stations de recharge");
