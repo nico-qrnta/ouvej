@@ -5,6 +5,7 @@ import {
   clearPolyline,
 } from "./map.js";
 import { selectedVehicle } from "./vehicle.js";
+import { formatDuration } from "./util.js";
 
 export let originCoordinates = null;
 export let destinationCoordinates = null;
@@ -63,6 +64,8 @@ function handleNewPath(route) {
   route.chargingStations.forEach((chargingStation) => {
     displayChargingStationMarker(chargingStation.lat, chargingStation.lon);
   });
+
+  displayPathInformations(route.summary);
 }
 
 export function setOriginCoordinates(location) {
@@ -81,4 +84,39 @@ function removeExistingPolyline() {
   if (window.polylineLayer) {
     map.removeLayer(window.polylineLayer);
   }
+}
+
+function displayPathInformations(informations) {
+  showItineraryDetails();
+
+  const spanDistance = document.querySelector(".distance");
+  const spanTotalPrice = document.querySelector(".total-price");
+  const spanTotalDuration = document.querySelector(".total-duration");
+  const spanNbStops = document.querySelector(".nb-stops");
+  const spanDurationRecharging = document.querySelector(".duration-recharging");
+  const spanMinPerKwh = document.querySelector(".min-per-kwh");
+  const spanPricePerKwh = document.querySelector(".price-per-kwh");
+  const spanPriceAvgSpeed = document.querySelector(".avg-speed");
+
+  spanDistance.innerHTML = informations.total_distance;
+  spanTotalPrice.innerHTML = informations.total_price;
+  spanTotalDuration.innerHTML = formatDuration(informations.total_duration);
+  spanNbStops.innerHTML = informations.nb_stops;
+  spanDurationRecharging.innerHTML =
+    informations.nb_stops > 0
+      ? formatDuration(informations.duration_recharge)
+      : "Non";
+  spanMinPerKwh.innerHTML = informations.min_per_kwh;
+  spanPricePerKwh.innerHTML = informations.price_per_kwh;
+  spanPriceAvgSpeed.innerHTML = informations.avg_speed;
+}
+
+export function hideItineraryDetails() {
+  const container = document.querySelector(".itinerary-details-container");
+  container.style.display = "none";
+}
+
+function showItineraryDetails() {
+  const container = document.querySelector(".itinerary-details-container");
+  container.style.display = "flex";
 }

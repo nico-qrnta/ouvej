@@ -3,10 +3,11 @@ from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
 class EstimationResponse(ComplexModel):
+    total_distance = Float
     duration_travel_min = Float
     avg_speed = Float
     nb_stops = Integer
-    duration_recharge_min = Float
+    duration_recharge = Float
     min_per_kwh = Float
     total_duration = Float
     total_price = Float
@@ -15,21 +16,23 @@ class EstimationResponse(ComplexModel):
 class TravelEstimationService(ServiceBase):
     @rpc(Float, Integer, Float, _returns=EstimationResponse)
     def estimation(ctx, distance_m, nb_stops, autonomy):
-        vitesse_moyenne = float(60.0)
-        min_per_kwh = float(0.3)
+        vitesse_moyenne = 60.0
+        min_per_kwh = 0.3
         chargement_min = autonomy * min_per_kwh
-        price_per_kwh = float(0.20)
+        price_per_kwh = 0.20
+        distance_km = round(distance_m / 1000, 2)
 
-        duration_travel_min = ((distance_m / 1000) / vitesse_moyenne) * 60
+        duration_travel_min = (distance_km / vitesse_moyenne) * 60
         duration_recharge_min = nb_stops * chargement_min
         total_duration = duration_travel_min + duration_recharge_min
-        total_price = (price_per_kwh * autonomy) * nb_stops
+        total_price = round((price_per_kwh * autonomy) * nb_stops, 2)
 
         return EstimationResponse(
+            total_distance=distance_km,
             duration_travel_min=duration_travel_min,
             avg_speed=vitesse_moyenne,
             nb_stops=nb_stops,
-            duration_recharge_min=duration_recharge_min,
+            duration_recharge=duration_recharge_min,
             min_per_kwh=min_per_kwh,
             total_duration=total_duration,
             total_price=total_price,

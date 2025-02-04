@@ -284,3 +284,65 @@ h1 {
 .selected-vehicle-thumbnail {
   width: 100%;
 }
+
+.itinerary-details-container {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 1000;
+  border: 5px solid #007bff;
+  display: none;
+  flex-direction: column;
+}
+
+p {
+  margin: 0;
+}
+
+.distance-details-container {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.total-duration-wrapper {
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin: 10px 0px;
+}
+
+.avg-speed-wrapper {
+  font-weight: 500;
+}
+
+.autonomy-details-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.autonomy-details-container h3 {
+  color: #007bff;
+}
+
+.autonomy-details {
+  display: flex;
+  gap: 2px;
+}
+
+.total-price-wrapper {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.itinerary-important {
+  display: flex;
+  gap: 10px;
+  color: #007bff;
+  font-weight: bolder;
+  font-size: 1.8rem;
+  margin: 10px 0px 0px 0px;
+}

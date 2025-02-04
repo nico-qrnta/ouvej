@@ -1,4 +1,5 @@
 import { destinationCoordinates, originCoordinates } from "./navigation.js";
+import { hideItineraryDetails } from "./navigation.js";
 
 export let map;
 let startMarker = null;
@@ -32,6 +33,7 @@ export function setStartMarker(location) {
 
   clearOriginMarker();
   clearChargingStationMarkers();
+  hideItineraryDetails();
 
   startMarker = L.marker([location.lat, location.lon], {
     title: location.name || "Starting Point",
@@ -50,6 +52,7 @@ export function setEndMarker(location) {
 
   clearDestinationMarker();
   clearChargingStationMarkers();
+  hideItineraryDetails();
 
   endMarker = L.marker([location.lat, location.lon], {
     title: location.name || "Destination",
