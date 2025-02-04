@@ -1,5 +1,8 @@
 import dotenv from "dotenv";
 import polyline from "polyline";
+import soap from "soap";
+
+const soapUrl = "http://localhost:8000?wsdl";
 
 dotenv.config();
 
@@ -87,6 +90,32 @@ async function findClosestChargingStation(coordinates) {
   return await fetchChargingStations(coordinates.lat, coordinates.lon);
 }
 
+async function fetchNavigationDetails(distance_m, nb_stops, autonomy) {
+  const args = {
+    distance_m,
+    nb_stops,
+    autonomy,
+  };
+
+  return new Promise((resolve, reject) => {
+    soap.createClient(soapUrl, (err, client) => {
+      if (err) {
+        console.error("Error creating SOAP client:", err);
+        return reject(err);
+      }
+
+      client.estimation(args, (err, result) => {
+        if (err) {
+          console.error("Error calling SOAP service:", err);
+          return reject(err);
+        }
+
+        resolve(result.estimationResult);
+      });
+    });
+  });
+}
+
 export async function findRouteChargingStations(
   originCoordinates,
   destinationCoordinates,
@@ -97,6 +126,7 @@ export async function findRouteChargingStations(
   let finalPointsPolyline = polyline.decode(initialRoute.geometry);
   let waypoints = [];
   let chargingStations = [];
+  let details = {};
 
   let endSegmentCoordinates = extractEndSegmentCoordinates(
     finalPointsPolyline,
@@ -120,9 +150,15 @@ export async function findRouteChargingStations(
 
     finalRoute = await fetchRoute(waypoints);
     finalPointsPolyline = polyline.decode(finalRoute.geometry);
+    details = await fetchNavigationDetails(
+      finalRoute.summary.distance,
+      chargingStations.length,
+      segmentLength
+    );
   }
 
   return {
+    summary: details,
     chargingStations: chargingStations,
     routePointsPolyline: finalPointsPolyline,
   };
