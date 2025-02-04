@@ -208,6 +208,16 @@ h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
+.vehicle-details-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.vehicle-details-thumnail {
+  width: 100%;
+}
+
 .route-button {
   position: absolute;
   width: calc(100% - 40px);
@@ -239,4 +249,24 @@ h1 {
 
 .route-button:active {
   background-color: #004494;
+}
+
+.vehicle-thumbnail {
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+.vehicle-details {
+  text-align: left;
+  width: 80%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+.vehicle-details h2 {
+  text-align: center;
+}
+.vehicle-details p {
+  margin: 8px 0;
+}
+.vehicle-details ul {
+  padding-left: 20px;
 }

@@ -12,8 +12,8 @@ import {
 } from "./scripts/vehicle.js";
 
 (() => {
-  const map = initMap();
-  // initializeVehicleList();
+  initMap();
+  initializeVehicleList();
 })();
 
 const autocompleteInput = debounce(async (event, containerId) => {
