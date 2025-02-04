@@ -86,6 +86,8 @@ export const fetchVehicleList = async (page, size, search) => {
   try {
     const data = await client.request(vehicleListQuery, variables);
 
+    console.log(data);
+
     const transformedVehicles = data.vehicleList.map((vehicle) => ({
       id: vehicle.id,
       make: vehicle.naming.make,
@@ -109,7 +111,7 @@ export const fetchVehicleDetails = async (vehicleId) => {
 
     const bestAutonomy = vehicle.range.best.combined;
     const worstAutonomy = vehicle.range.worst.combined;
-    const autonomy = (bestAutonomy + worstAutonomy) / 2
+    const autonomy = (bestAutonomy + worstAutonomy) / 2;
 
     const transformedVehicle = {
       id: vehicle.id,
@@ -128,7 +130,6 @@ export const fetchVehicleDetails = async (vehicleId) => {
     };
 
     console.log(transformedVehicle);
-
 
     return transformedVehicle;
   } catch (error) {

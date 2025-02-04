@@ -1,4 +1,9 @@
-import { map, displayChargingStationMarker, clearChargingStationMarkers, clearPolyline } from "./map.js";
+import {
+  map,
+  displayChargingStationMarker,
+  clearChargingStationMarkers,
+  clearPolyline,
+} from "./map.js";
 import { selectedVehicle } from "./vehicle.js";
 
 export let originCoordinates = null;
@@ -15,10 +20,10 @@ export async function fetchPath() {
     return;
   }
 
-  // if (!selectedVehicle) {
-  //   alert("Veuillez sélectionner un véhicule.");
-  //   return;
-  // }
+  if (!selectedVehicle) {
+    alert("Veuillez sélectionner un véhicule.");
+    return;
+  }
 
   fetch("http://localhost:3000/route", {
     method: "POST",
@@ -30,7 +35,7 @@ export async function fetchPath() {
         [originCoordinates.lon, originCoordinates.lat],
         [destinationCoordinates.lon, destinationCoordinates.lat],
       ],
-      vehicle_autonomy: 357,
+      vehicle_autonomy: selectedVehicle.battery.range,
     }),
   })
     .then((response) => response.json())
@@ -56,10 +61,7 @@ function handleNewPath(route) {
   map.fitBounds(window.polylineLayer.getBounds());
 
   route.chargingStations.forEach((chargingStation) => {
-    displayChargingStationMarker(
-      chargingStation.lat,
-      chargingStation.lon
-    );
+    displayChargingStationMarker(chargingStation.lat, chargingStation.lon);
   });
 }
 

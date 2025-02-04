@@ -34,9 +34,11 @@ async function getVehicleList() {
 
 async function fetchVehicleDetails(vehicle) {
   const vehicleId = vehicle.id;
-  
+
   try {
-    const response = await fetch(`http://localhost:3000/vehicle?vehicleId=${vehicleId}`);
+    const response = await fetch(
+      `http://localhost:3000/vehicle?vehicleId=${vehicleId}`
+    );
     return await response.json();
   } catch (error) {
     console.error("Error fetching vehicles:", error);
@@ -87,32 +89,67 @@ async function handleVehicleSelection(vehicle) {
   selectedVehicle = await fetchVehicleDetails(vehicle);
 
   /* show vehicle informations */
-  displaySelectedVehicle()
+  displaySelectedVehicle();
 }
 
-
-function displaySelectedVehicle(){
+function displaySelectedVehicle() {
   const selectedVehicleContainer = document.getElementById(
     "selected-vehicle-container"
   );
 
   selectedVehicleContainer.innerHTML = "";
 
-  const image = create("img", selectedVehicleContainer, null, "vehicle-thumbnail");
+  const image = create(
+    "img",
+    selectedVehicleContainer,
+    null,
+    "selected-vehicle-thumbnail"
+  );
   image.src = selectedVehicle.media;
 
-  const detailsContainer = create("div", selectedVehicleContainer, null, "vehicle-details");
+  const detailsContainer = create(
+    "div",
+    selectedVehicleContainer,
+    null,
+    "selected-vehicle-details"
+  );
 
-  create("h2", detailsContainer, `${selectedVehicle.make} ${selectedVehicle.model}`, null, null);
+  create(
+    "h2",
+    detailsContainer,
+    `${selectedVehicle.make} ${selectedVehicle.model}`,
+    null,
+    null
+  );
 
-  create("p", detailsContainer, `Batterie utilisable: ${selectedVehicle.battery.usable_kwh} kWh`, null, null);
-  create("p", detailsContainer, `Autonomie estimée: ${selectedVehicle.battery.range} km`, null, null);
+  create(
+    "p",
+    detailsContainer,
+    `Batterie   : ${selectedVehicle.battery.usable_kwh} kWh`,
+    null,
+    null
+  );
+  create(
+    "p",
+    detailsContainer,
+    `Autonomie : ${selectedVehicle.battery.range} km`,
+    null,
+    null
+  );
 
-  create("p", detailsContainer, `Charge rapide: ${selectedVehicle.battery.fast_charging_support ? "Oui" : "Non"}`, null, null);
+  create(
+    "p",
+    detailsContainer,
+    `Charge rapide: ${
+      selectedVehicle.battery.fast_charging_support ? "Oui" : "Non"
+    }`,
+    null,
+    null
+  );
 
   const performanceContainer = create("div", detailsContainer);
   performanceContainer.innerHTML = `
-    <p><strong>Performances :</strong></p>
+    <h3>Performances :</h3>
     <ul>
       <li>Accélération (0-100 km/h): ${selectedVehicle.performance.acceleration} s</li>
       <li>Vitesse maximale: ${selectedVehicle.performance.top_speed} km/h</li>

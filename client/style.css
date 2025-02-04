@@ -270,3 +270,17 @@ h1 {
 .vehicle-details ul {
   padding-left: 20px;
 }
+
+#selected-vehicle-container {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+
+#selected-vehicle-container:hover {
+  background-color: #ccc;
+}
+
+.selected-vehicle-thumbnail {
+  width: 100%;
+}
