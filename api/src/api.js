@@ -11,7 +11,7 @@ import {
 const app = express();
 app.use(cors());
 app.use(express.json());
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get("/vehicles", async (req, res) => {
   const { page = 0, size = 10, search = "" } = req.query;

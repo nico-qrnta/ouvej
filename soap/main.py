@@ -1,3 +1,4 @@
+import os
 from spyne import Application, rpc, ServiceBase, Float, Integer, ComplexModel
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
@@ -49,7 +50,8 @@ application = Application(
 wsgi_application = WsgiApplication(application)
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
     from wsgiref.simple_server import make_server
-    server = make_server('0.0.0.0', 8000, wsgi_application)
-    print("SOAP service running on http://0.0.0.0:8000")
+    server = make_server('0.0.0.0', port, wsgi_application)
+    print(f'SOAP service running on port {port}')
     server.serve_forever()
