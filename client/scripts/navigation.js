@@ -26,7 +26,7 @@ export async function fetchPath() {
     return;
   }
 
-  fetch("http://localhost:3000/route", {
+  fetch(`${CONFIG.BASE_API_URL}/route`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

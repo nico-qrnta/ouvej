@@ -24,7 +24,9 @@ export async function initializeVehicleList() {
 
 async function getVehicleList() {
   try {
-    const response = await fetch(`http://localhost:3000/vehicles`);
+    const response = await fetch(
+      `${CONFIG.BASE_API_URL}/vehicles`
+    );
     return await response.json();
   } catch (error) {
     console.error("Error fetching vehicles:", error);
@@ -37,7 +39,7 @@ async function fetchVehicleDetails(vehicle) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/vehicle?vehicleId=${vehicleId}`
+      `${CONFIG.BASE_API_URL}/vehicle?vehicleId=${vehicleId}`
     );
     return await response.json();
   } catch (error) {

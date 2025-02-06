@@ -11,7 +11,7 @@ export async function getInputSuggestions(query) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/suggestion?search=${query}`
+      `${CONFIG.BASE_API_URL}/suggestion?search=${query}`
     );
     return await response.json();
   } catch (error) {
