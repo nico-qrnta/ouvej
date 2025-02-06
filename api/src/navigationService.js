@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import polyline from "polyline";
 import soap from "soap";
 
-const soapUrl = "http://localhost:8000?wsdl";
+const soapUrl = process.env.SOAP_BASE_URL;
 
 dotenv.config();
 
