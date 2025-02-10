@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import polyline from "polyline";
 import soap from "soap";
 
-const soapUrl = process.env.SOAP_BASE_URL;
 
 dotenv.config();
+
+const soapUrl = process.env.SOAP_WSDL_URL;
 
 export async function fetchRoute(coordinates) {
   const response = await fetch(
