@@ -20,7 +20,12 @@ app.get("/vehicles", async (req, res) => {
     const vehicles = await fetchVehicleList(Number(page), Number(size), search);
     res.json(vehicles);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch vehicles" });
+    res
+      .status(500)
+      .json({
+        error:
+          "Une erreur est survenue lors de la récupération de la liste des véhicules",
+      });
   }
 });
 
@@ -35,7 +40,12 @@ app.get("/vehicle", async (req, res) => {
     const vehicleDetails = await fetchVehicleDetails(vehicleId);
     res.json(vehicleDetails);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch vehicle details" });
+    res
+      .status(500)
+      .json({
+        error:
+          "Une erreur est survenue lors de la récupération des détails du véhicule",
+      });
   }
 });
 
@@ -50,7 +60,11 @@ app.get("/suggestion", async (req, res) => {
     const suggestions = await fetchPlanSuggestion(search);
     res.json(suggestions);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch suggestions" });
+    res
+      .status(500)
+      .json({
+        error: "Une erreur est survenue lors de la recherche de suggestions",
+      });
   }
 });
 
@@ -59,14 +73,20 @@ app.post("/route", async (req, res) => {
 
   if (!coordinates || coordinates.length < 2) {
     return res.status(400).json({
-      error: "Veuillez renseigner des coordonnées valides.",
+      error: "Le champ 'coordinates' est requis.",
+    });
+  }
+
+  if (!Array.isArray(coordinates)) {
+    return res.status(400).json({
+      error: "Veuillez renseigner au moins deux coordonnées valides.",
     });
   }
 
   if (!vehicle_autonomy) {
-    return res.status(400).json({
-      error: "Veuillez renseigner le chmap 'vehicle_autonomy' en km",
-    });
+    return res
+      .status(400)
+      .json({ error: "Le champ 'vehicle_autonomy' est requis." });
   }
 
   try {
@@ -88,7 +108,7 @@ app.post("/route", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Vehicle API");
+  res.send("Bienvenue sur l'api de Ouvej !");
 });
 
 app.listen(port, () => {
