@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/814110a0-21a1-498d-be38-b365c715f7cc/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ouvej-soap",
+    "appService.deploySubpath": "soap"
+}

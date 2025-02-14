@@ -4,6 +4,14 @@ Ouvej application réalisée pour INFO802
 
 **Elève :** QUARANTA Nicolas - M1 INFO
 
+## Liens
+
+Application : https://salmon-bush-05fea8403.4.azurestaticapps.net/
+
+API REST : https://ouvej-api.azurewebsites.net/
+
+API SOAP : https://ouvej-soap.azurewebsites.net/?wsdl
+
 ## Introduction
 
 L'API Ouvej fournit plusieurs services liés aux véhicules, aux itinéraires et aux suggestions de planification. Cette API est construite avec Express et prend en charge les requêtes JSON.
